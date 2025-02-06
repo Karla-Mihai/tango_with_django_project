@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category.name }} - Rango</title>
+</head>
+<body>
+
+    <!-- Display category name -->
+    <div>
+        {% if category %}
+            <h1>{{ category.name }}</h1>
+
+            <!-- Display the pages within this category -->
+            {% if pages %}
+                <ul>
+                    {% for page in pages %}
+                        <li>
+                            <a href="{{ page.url }}">{{ page.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p><strong>No pages currently in this category.</strong></p>
+            {% endif %}
+        {% else %}
+            <p><strong>The specified category does not exist.</strong></p>
+        {% endif %}
+    </div>
+
+    <!-- Most Liked Categories Section -->
+    <h2>Most Liked Categories</h2>
+    <div>
+        {% if most_liked_categories %}
+            <ul>
+                {% for category in most_liked_categories %}
+                    <li>
+                        <a href="/rango/category/{{ category.slug }}/">{{ category.name }}</a> - {{ category.likes }} likes
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p><strong>There are no categories present.</strong></p>
+        {% endif %}
+    </div>
+
+    <!-- Most Viewed Pages Section -->
+    <h2>Most Viewed Pages</h2>
+    <div>
+        {% if most_viewed_pages %}
+            <ul>
+                {% for page in most_viewed_pages %}
+                    <li>
+                        <a href="{{ page.url }}">{{ page.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p><strong>No pages currently in category.</strong></p>
+        {% endif %}
+    </div>
+
+    <!-- Back to the index link at the bottom (as a part of homepage link) -->
+    <div>
+        <a href="{% url 'rango:index' %}">Back</a>
+    </div>
+</body>
+</html>
