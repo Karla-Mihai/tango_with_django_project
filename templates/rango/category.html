@@ -1,66 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ category.name }} - Rango</title>
-</head>
-<body>
-    <div>
-        {% if category %}
-            <h1>{{ category.name }}</h1>
+{% extends 'rango/base.html' %}
 
-            <a href="{% url 'rango:add_page' category.slug %}">Add Page</a>
-            
-            {% if pages %}
-                <ul>
-                    {% for page in pages %}
-                        <li>
-                            <a href="{{ page.url }}">{{ page.title }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p><strong>No pages currently in this category.</strong></p>
-            {% endif %}
+{% block title_block %}
+    {% if category %}
+       {{ category.name }}
+    {% else %}
+       Unknown Category
+    {% endif %}
+{% endblock %}
+
+
+{% block body_block %}
+    <h1>{{ category.name }}</h1>
+
+    <ul>
+        {% if pages %}
+            {% for page in pages %}
+                <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+            {% endfor %}
         {% else %}
-            <p><strong>The specified category does not exist.</strong></p>
+            <li><strong>There are no pages in this category.</strong></li>
         {% endif %}
-    </div>
+    </ul>
 
-
-    <h2>Most Liked Categories</h2>
-    <div>
-        {% if most_liked_categories %}
-            <ul>
-                {% for category in most_liked_categories %}
-                    <li>
-                        <a href="/rango/category/{{ category.slug }}/">{{ category.name }}</a> - {{ category.likes }} likes
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p><strong>There are no categories present.</strong></p>
-        {% endif %}
-    </div>
-
-    
-    <h2>Most Viewed Pages</h2>
-    <div>
-        {% if most_viewed_pages %}
-            <ul>
-                {% for page in most_viewed_pages %}
-                    <li>
-                        <a href="{{ page.url }}">{{ page.title }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p><strong>No pages currently in category.</strong></p>
-        {% endif %}
-    </div>
-
-    <div>
-        <a href="{% url 'rango:index' %}">Back</a>
-    </div>
-</body>
-</html>
+    <a href="{% url 'rango:add_page' category.slug %}">Add a New Page</a>
+{% endblock %}
