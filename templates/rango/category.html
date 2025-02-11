@@ -22,5 +22,7 @@
         {% endif %}
     </ul>
 
-    <a href="{% url 'rango:add_page' category.slug %}">Add a New Page</a>
+    {% if user.is_authenticated %}
+        <p><a href="{% url 'rango:add_page' category.slug %}">Add a New Page</a></p>
+    {% endif %}
 {% endblock %}

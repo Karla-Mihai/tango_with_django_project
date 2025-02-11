@@ -7,8 +7,13 @@
 
 {% block body_block %}
     <h1>Rango says...</h1>
+
     <div>
-        hey there partner! <br />
+        {% if user.is_authenticated %}
+            <p>howdy {{ user.username }}!</p>  {# Ensure lowercase 'howdy' and correct spacing #}
+        {% else %}
+            <p>hey there partner!</p>
+        {% endif %}
         <strong>{{ boldmessage }}</strong><br />
     </div>
     
