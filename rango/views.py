@@ -8,26 +8,39 @@ from rango.forms import UserForm,UserProfileForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from datetime import datetime, timedelta
+from django.conf import settings
+
 
 def index(request):
     category_list = Category.objects.order_by('-likes')[:5]
     page_list = Page.objects.order_by('-views')[:5]
     
-    context_dict = {
-        'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!',
-        'categories': category_list,
-        'pages': page_list
-    }
+    context_dict = {}
+    context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
+    context_dict['categories'] = category_list
+    context_dict['pages'] = page_list
 
-    return render(request, 'rango/index.html', context=context_dict)
+    visitor_cookie_handler(request)
+    
+    response = render(request, 'rango/index.html', context=context_dict)
+    return response
+
 
 
 def about(request):
+    
+    visitor_cookie_handler(request)
+    visits = request.session.get('visits', 1)
+    print(visits)
     context_dict = {
         'message': "This tutorial has been put together by Karla Mihai",
-        'MEDIA_URL': settings.MEDIA_URL  
+        'MEDIA_URL': settings.MEDIA_URL,
+        'visits': visits  
     }
+
     return render(request, 'rango/about.html', context=context_dict)
+
 
 
 def show_category(request, category_name_slug):
@@ -167,3 +180,22 @@ def user_logout(request):
 @login_required
 def restricted(request):
     return render(request, 'rango/restricted.html')
+
+
+def visitor_cookie_handler(request):
+   
+    visits = request.session.get('visits', 0)
+    last_visit_cookie = request.session.get('last_visit', str(datetime.now()- timedelta(days=1)))
+
+    try:
+        last_visit_time = datetime.strptime(last_visit_cookie, "%Y-%m-%d %H:%M:%S.%f")
+    except ValueError:
+        last_visit_time = datetime.now()
+
+
+    if (datetime.now() - last_visit_time).days > 0:
+        visits += 1
+        request.session['last_visit'] = str(datetime.now())
+
+    request.session['visits'] = visits
+    request.session.modified = True
